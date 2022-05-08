@@ -59,9 +59,12 @@ function useBook(bookId) {
 // 2. Returns a memoized callback (React.useCallback) version of this
 // refetchBookSearchQuery function. It should no longer need to accept user as
 // an argument and instead lists it as a dependency.
-async function refetchBookSearchQuery(user) {
-  queryCache.removeQueries('bookSearch')
-  await queryCache.prefetchQuery(getBookSearchConfig('', user))
+function useRefetchBookSearchQuery() {
+  const {user} = React.useContext(AuthContext)
+  return React.useCallback(async () => {
+    queryCache.removeQueries('bookSearch')
+    await queryCache.prefetchQuery(getBookSearchConfig('', user))
+  }, [user])
 }
 
 const bookQueryConfig = {
@@ -73,4 +76,4 @@ function setQueryDataForBook(book) {
   queryCache.setQueryData(['book', {bookId: book.id}], book, bookQueryConfig)
 }
 
-export {useBook, useBookSearch, refetchBookSearchQuery, setQueryDataForBook}
+export {useBook, useBookSearch, useRefetchBookSearchQuery, setQueryDataForBook}
