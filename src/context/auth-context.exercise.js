@@ -21,6 +21,16 @@ async function getUser() {
 
 const AuthContext = React.createContext()
 
+export const useClient = () => {
+  const token = useAuth().user.token
+  return React.useCallback(
+    function authenticatedClient(endpoint, config) {
+      return client(endpoint, {...config, token})
+    },
+    [token],
+  )
+}
+
 export const useAuth = () => {
   const auth = React.useContext(AuthContext)
   if (!auth) {
